@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: uid-bypass-admin
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python app.py
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: FLASK_ENV
+        value: production
+      - key: PORT
+        value: 10000
+    healthCheckPath: /
+    
+  - type: web
+    name: uid-bypass-proxy
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: mitmdump -s bypass.py --listen-port 8080 --web-host 0.0.0.0 --web-port 8081
+    envVars:
+      - key: PROXY_PORT
+        value: 8080
