@@ -8,3 +8,4 @@ cryptography==45.0.6
 pyOpenSSL==25.1.0
 requests==2.32.3
 gunicorn==23.0.0
+pycryptodome==3.21.0
