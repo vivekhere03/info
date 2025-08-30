@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+
+{% block title %}Proxy Service - Professional UID Bypass{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="admin-container p-5 text-center">
+            <i class="fas fa-shield-alt fa-4x text-primary mb-4"></i>
+            <h1 class="mb-3">Professional Proxy Service</h1>
+            <p class="lead mb-4">Advanced UID Bypass Solution with Multi-Client Support</p>
+            
+            <div class="row mt-5">
+                <div class="col-md-4">
+                    <div class="card card-custom h-100 p-4">
+                        <i class="fas fa-network-wired fa-3x text-primary mb-3"></i>
+                        <h5>Advanced Proxy</h5>
+                        <p class="text-muted">High-performance mitmproxy-based solution with real-time request interception and modification.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card card-custom h-100 p-4">
+                        <i class="fas fa-shield-alt fa-3x text-success mb-3"></i>
+                        <h5>Secure UID Management</h5>
+                        <p class="text-muted">Protected UID bypass system with encrypted communication and secure authentication.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card card-custom h-100 p-4">
+                        <i class="fas fa-users fa-3x text-info mb-3"></i>
+                        <h5>Multi-Client Support</h5>
+                        <p class="text-muted">Simultaneous support for multiple clients with individual UID management.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-5">
+                <a href="{{ url_for('login') }}" class="btn btn-custom btn-lg me-3">
+                    <i class="fas fa-sign-in-alt"></i> Admin Access
+                </a>
+                <button class="btn btn-outline-primary btn-lg" onclick="showSetupInfo()">
+                    <i class="fas fa-info-circle"></i> Setup Guide
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="admin-container p-4">
+            <h4 class="text-center mb-4"><i class="fas fa-cog"></i> Service Configuration</h4>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card card-custom p-4">
+                        <h6><i class="fas fa-server"></i> Proxy Settings</h6>
+                        <ul class="list-unstyled">
+                            <li><strong>Port:</strong> 8080</li>
+                            <li><strong>Protocol:</strong> HTTP/HTTPS</li>
+                            <li><strong>Type:</strong> Intercepting Proxy</li>
+                            <li><strong>Encryption:</strong> AES-256-CBC</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card card-custom p-4">
+                        <h6><i class="fas fa-chart-bar"></i> Performance</h6>
+                        <ul class="list-unstyled">
+                            <li><strong>Response Time:</strong> < 50ms</li>
+                            <li><strong>Concurrent Users:</strong> 100+</li>
+                            <li><strong>Uptime:</strong> 99.9%</li>
+                            <li><strong>Data Processing:</strong> Real-time</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="admin-container p-4">
+            <h4 class="text-center mb-4"><i class="fas fa-rocket"></i> Quick Setup</h4>
+            <div class="row">
+                <div class="col-md-3 text-center">
+                    <div class="card card-custom p-3 h-100">
+                        <i class="fas fa-download fa-2x text-primary mb-2"></i>
+                        <h6>1. Install</h6>
+                        <p class="text-muted small">Run install.BAT to setup dependencies</p>
+                    </div>
+                </div>
+                <div class="col-md-3 text-center">
+                    <div class="card card-custom p-3 h-100">
+                        <i class="fas fa-play fa-2x text-success mb-2"></i>
+                        <h6>2. Start Server</h6>
+                        <p class="text-muted small">Execute start_server.bat to begin</p>
+                    </div>
+                </div>
+                <div class="col-md-3 text-center">
+                    <div class="card card-custom p-3 h-100">
+                        <i class="fas fa-cog fa-2x text-warning mb-2"></i>
+                        <h6>3. Configure</h6>
+                        <p class="text-muted small">Set proxy to your_ip:8080</p>
+                    </div>
+                </div>
+                <div class="col-md-3 text-center">
+                    <div class="card card-custom p-3 h-100">
+                        <i class="fas fa-check fa-2x text-info mb-2"></i>
+                        <h6>4. Ready</h6>
+                        <p class="text-muted small">Service is ready for use</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Setup Info Modal -->
+<div class="modal fade" id="setupModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fas fa-book"></i> Detailed Setup Guide</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <h6><i class="fas fa-list-ol"></i> Step-by-Step Instructions:</h6>
+                <ol>
+                    <li><strong>Prerequisites:</strong> Ensure Python 3.13.7+ is installed</li>
+                    <li><strong>Dependencies:</strong> Run <code>pip install -r requirements.txt</code></li>
+                    <li><strong>Start Service:</strong> Execute <code>python app.py</code> for web interface</li>
+                    <li><strong>Start Proxy:</strong> Run <code>mitmdump -s bypass.py</code> in separate terminal</li>
+                    <li><strong>Configure Client:</strong> Set proxy to <code>[YOUR_IP]:8080</code></li>
+                    <li><strong>Admin Access:</strong> Visit <code>http://[YOUR_IP]:5000</code></li>
+                </ol>
+                
+                <h6 class="mt-4"><i class="fas fa-exclamation-triangle text-warning"></i> Important Notes:</h6>
+                <ul>
+                    <li>Always start the web interface before the proxy service</li>
+                    <li>Ensure firewall allows connections on ports 5000 and 8080</li>
+                    <li>For production deployment, use proper SSL certificates</li>
+                    <li>Regular backup of UID database recommended</li>
+                </ul>
+                
+                <h6 class="mt-4"><i class="fas fa-network-wired"></i> Network Configuration:</h6>
+                <div class="bg-light p-3 rounded">
+                    <code>
+                        # Find your IP address:<br>
+                        Windows: ipconfig<br>
+                        Linux/Mac: ifconfig<br><br>
+                        
+                        # Set proxy in your application:<br>
+                        HTTP Proxy: [YOUR_IP]:8080<br>
+                        HTTPS Proxy: [YOUR_IP]:8080
+                    </code>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <a href="{{ url_for('login') }}" class="btn btn-custom">Access Admin Panel</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function showSetupInfo() {
+    new bootstrap.Modal(document.getElementById('setupModal')).show();
+}
+
+// Add some interactive effects
+document.querySelectorAll('.card-custom').forEach(card => {
+    card.addEventListener('mouseenter', function() {
+        this.style.transform = 'translateY(-8px)';
+    });
+    
+    card.addEventListener('mouseleave', function() {
+        this.style.transform = 'translateY(0)';
+    });
+});
+</script>
+{% endblock %}
