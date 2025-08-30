@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block title %}Login - Proxy Admin Panel{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-4">
+        <div class="admin-container p-5">
+            <div class="text-center mb-4">
+                <i class="fas fa-shield-alt fa-3x text-primary mb-3"></i>
+                <h2 class="mb-3">Secure Login</h2>
+                <p class="text-muted">Access the Proxy Admin Panel</p>
+            </div>
+
+            <form method="POST" autocomplete="off">
+                <div class="mb-3">
+                    <label for="username" class="form-label">
+                        <i class="fas fa-user"></i> Username
+                    </label>
+                    <input type="text" 
+                           class="form-control form-control-lg" 
+                           id="username" 
+                           name="username" 
+                           required 
+                           maxlength="50"
+                           pattern="[a-zA-Z0-9_]+"
+                           title="Username can only contain letters, numbers, and underscores"
+                           autocomplete="off">
+                </div>
+
+                <div class="mb-4">
+                    <label for="password" class="form-label">
+                        <i class="fas fa-lock"></i> Password
+                    </label>
+                    <input type="password" 
+                           class="form-control form-control-lg" 
+                           id="password" 
+                           name="password" 
+                           required
+                           autocomplete="off">
+                </div>
+
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-custom btn-lg">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </button>
+                </div>
+            </form>
+
+            <div class="mt-4 text-center">
+                <small class="text-muted">
+                    <i class="fas fa-lock"></i> This area is protected by advanced security measures
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="admin-container p-4">
+            <h4 class="text-center mb-3">
+                <i class="fas fa-info-circle"></i> Proxy Service Information
+            </h4>
+            <div class="row text-center">
+                <div class="col-md-4">
+                    <div class="card card-custom h-100 p-3">
+                        <i class="fas fa-network-wired fa-2x text-primary mb-2"></i>
+                        <h6>Proxy Server</h6>
+                        <p class="text-muted">Advanced mitmproxy-based solution</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card card-custom h-100 p-3">
+                        <i class="fas fa-shield-alt fa-2x text-success mb-2"></i>
+                        <h6>UID Protection</h6>
+                        <p class="text-muted">Secure UID bypass functionality</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card card-custom h-100 p-3">
+                        <i class="fas fa-users fa-2x text-info mb-2"></i>
+                        <h6>Multi-Client</h6>
+                        <p class="text-muted">Support for multiple users</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Prevent form resubmission on page refresh
+if (window.history.replaceState) {
+    window.history.replaceState(null, null, window.location.href);
+}
+
+// Add client-side validation
+document.querySelector('form').addEventListener('submit', function(e) {
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value;
+    
+    if (!username || !password) {
+        e.preventDefault();
+        alert('Please fill in all fields');
+        return;
+    }
+    
+    // Check for dangerous characters
+    const dangerousPattern = /<script|javascript:|on\w+\s*=|<.*?>|union\s+select|drop\s+table/i;
+    if (dangerousPattern.test(username) || dangerousPattern.test(password)) {
+        e.preventDefault();
+        alert('Invalid characters detected in input');
+        return;
+    }
+});
+</script>
+{% endblock %}

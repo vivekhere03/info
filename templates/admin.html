@@ -1,0 +1,255 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - Proxy Panel{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="admin-container p-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2><i class="fas fa-tachometer-alt"></i> Admin Dashboard</h2>
+                <div>
+                    <span class="me-3">Proxy Status: </span>
+                    <span id="proxy-status" class="status-badge status-{{ 'running' if proxy_status.lower() == 'running' else 'stopped' }}">
+                        {{ proxy_status }}
+                    </span>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="card card-custom text-center p-3">
+                        <i class="fas fa-id-card fa-2x text-primary mb-2"></i>
+                        <h4>{{ uids|length }}</h4>
+                        <p class="text-muted">Total UIDs</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card card-custom text-center p-3">
+                        <i class="fas fa-chart-line fa-2x text-success mb-2"></i>
+                        <h4>{{ logs|length }}</h4>
+                        <p class="text-muted">Recent Logs</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card card-custom text-center p-3">
+                        <i class="fas fa-server fa-2x text-info mb-2"></i>
+                        <h4>8080</h4>
+                        <p class="text-muted">Proxy Port</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card card-custom text-center p-3">
+                        {% if proxy_status.lower() == 'running' %}
+                            <a href="#" class="btn btn-custom btn-sm" onclick="alert('Proxy is already running')">
+                                <i class="fas fa-play"></i> Running
+                            </a>
+                        {% else %}
+                            <a href="{{ url_for('start_proxy') }}" class="btn btn-custom btn-sm">
+                                <i class="fas fa-play"></i> Start Proxy
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="admin-container p-4">
+            <h4><i class="fas fa-plus-circle"></i> Add New UID</h4>
+            <form method="POST" action="{{ url_for('add_uid') }}" class="row g-3">
+                <div class="col-md-6">
+                    <label for="uid" class="form-label">UID (Numbers only)</label>
+                    <input type="text" 
+                           class="form-control" 
+                           id="uid" 
+                           name="uid" 
+                           required 
+                           pattern="[0-9]+" 
+                           maxlength="20"
+                           title="UID must contain only numbers"
+                           placeholder="Enter UID (e.g., 13076911046)">
+                </div>
+                <div class="col-md-4">
+                    <label for="description" class="form-label">Description (Optional)</label>
+                    <input type="text" 
+                           class="form-control" 
+                           id="description" 
+                           name="description" 
+                           maxlength="100"
+                           placeholder="Brief description">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">&nbsp;</label>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-custom">
+                            <i class="fas fa-plus"></i> Add UID
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="admin-container p-4">
+            <h4><i class="fas fa-list"></i> Manage UIDs</h4>
+            {% if uids %}
+            <div class="table-responsive">
+                <table class="table table-hover table-custom">
+                    <thead class="table-dark">
+                        <tr>
+                            <th><i class="fas fa-hashtag"></i> ID</th>
+                            <th><i class="fas fa-id-card"></i> UID</th>
+                            <th><i class="fas fa-comment"></i> Description</th>
+                            <th><i class="fas fa-user"></i> Added By</th>
+                            <th><i class="fas fa-calendar"></i> Created</th>
+                            <th><i class="fas fa-toggle-on"></i> Status</th>
+                            <th><i class="fas fa-cogs"></i> Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for uid in uids %}
+                        <tr>
+                            <td>{{ uid.id }}</td>
+                            <td><code>{{ uid.uid }}</code></td>
+                            <td>{{ uid.description or 'No description' }}</td>
+                            <td>{{ uid.added_by }}</td>
+                            <td>{{ uid.created_at.split('.')[0] if uid.created_at else 'Unknown' }}</td>
+                            <td>
+                                <span class="badge bg-{{ 'success' if uid.is_active else 'secondary' }}">
+                                    {{ 'Active' if uid.is_active else 'Inactive' }}
+                                </span>
+                            </td>
+                            <td>
+                                <button class="btn btn-danger btn-sm" 
+                                        onclick="confirmDelete('{{ uid.id }}', '{{ uid.uid }}')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="text-center py-4">
+                <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                <p class="text-muted">No UIDs found. Add your first UID above.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="admin-container p-4">
+            <h4><i class="fas fa-history"></i> Recent Access Logs</h4>
+            {% if logs %}
+            <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                <table class="table table-sm table-striped">
+                    <thead class="table-dark sticky-top">
+                        <tr>
+                            <th>Time</th>
+                            <th>User</th>
+                            <th>Action</th>
+                            <th>IP Address</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for log in logs %}
+                        <tr>
+                            <td><small>{{ log.timestamp.split('.')[0] if log.timestamp else 'Unknown' }}</small></td>
+                            <td>{{ log.username or 'Anonymous' }}</td>
+                            <td>{{ log.action }}</td>
+                            <td>{{ log.ip_address or 'Unknown' }}</td>
+                            <td>
+                                <span class="badge bg-{{ 'success' if log.success else 'danger' }}">
+                                    {{ 'Success' if log.success else 'Failed' }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="text-center py-3">
+                <p class="text-muted">No logs available.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fas fa-exclamation-triangle text-danger"></i> Confirm Deletion</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete UID <strong id="delete-uid"></strong>?</p>
+                <p class="text-danger"><small>This action cannot be undone.</small></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <a href="#" id="confirm-delete" class="btn btn-danger">
+                    <i class="fas fa-trash"></i> Delete
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function confirmDelete(uidId, uidValue) {
+    document.getElementById('delete-uid').textContent = uidValue;
+    document.getElementById('confirm-delete').href = '/delete_uid/' + uidId;
+    new bootstrap.Modal(document.getElementById('deleteModal')).show();
+}
+
+// Form validation
+document.querySelector('form[action="{{ url_for("add_uid") }}"]').addEventListener('submit', function(e) {
+    const uid = document.getElementById('uid').value.trim();
+    const description = document.getElementById('description').value.trim();
+    
+    // Validate UID
+    if (!/^\d+$/.test(uid)) {
+        e.preventDefault();
+        alert('UID must contain only numbers');
+        return;
+    }
+    
+    if (uid.length > 20) {
+        e.preventDefault();
+        alert('UID is too long (max 20 characters)');
+        return;
+    }
+    
+    // Validate description for dangerous content
+    const dangerousPattern = /<script|javascript:|on\w+\s*=|<.*?>|union\s+select|drop\s+table/i;
+    if (dangerousPattern.test(description)) {
+        e.preventDefault();
+        alert('Invalid characters detected in description');
+        return;
+    }
+});
+
+// Auto-refresh data every 60 seconds
+setInterval(function() {
+    window.location.reload();
+}, 60000);
+</script>
+{% endblock %}
